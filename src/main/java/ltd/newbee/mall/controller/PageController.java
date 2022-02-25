@@ -1,18 +1,24 @@
 package ltd.newbee.mall.controller;
 
+import ltd.newbee.mall.entity.User;
 import ltd.newbee.mall.service.UserService;
 import ltd.newbee.mall.util.PageResult;
 import ltd.newbee.mall.util.Result;
 import ltd.newbee.mall.util.PageQueryUtil;
+import ltd.newbee.mall.utils.DownExcel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
-public class PageTestController {
+public class PageController {
 
     @Autowired
     private UserService userService;
@@ -41,5 +47,23 @@ public class PageTestController {
         // 返回分页数据
         result.setData(userPage);
         return result;
+    }
+
+    @GetMapping("/simpleDown")
+    public void simpleDown(HttpServletResponse response) throws IOException {
+        List<User> list = userService.getUserAll();
+        DownExcel.download(response, User.class, list);
+    }
+
+    @GetMapping("/simpleDown2")
+    public void simpleDown2(HttpServletResponse response) throws IOException {
+        List<User> list = userService.getUserAll();
+        DownExcel.download(response, User.class, list);
+    }
+
+    @GetMapping("/pageDown")
+    public void pageDown(HttpServletResponse response) {
+
+
     }
 }
