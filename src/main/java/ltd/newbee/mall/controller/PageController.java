@@ -1,5 +1,6 @@
 package ltd.newbee.mall.controller;
 
+import com.alibaba.excel.EasyExcel;
 import ltd.newbee.mall.entity.User;
 import ltd.newbee.mall.service.UserService;
 import ltd.newbee.mall.util.PageResult;
@@ -49,6 +50,13 @@ public class PageController {
         return result;
     }
 
+
+    @GetMapping("/pageDown")
+    public void pageDown(HttpServletResponse response) {
+
+    }
+
+
     @GetMapping("/simpleDown")
     public void simpleDown(HttpServletResponse response) throws IOException {
         List<User> list = userService.getUserAll();
@@ -58,12 +66,14 @@ public class PageController {
     @GetMapping("/simpleDown2")
     public void simpleDown2(HttpServletResponse response) throws IOException {
         List<User> list = userService.getUserAll();
-        DownExcel.download(response, User.class, list);
-    }
 
-    @GetMapping("/pageDown")
-    public void pageDown(HttpServletResponse response) {
+        // 设置文本内省
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");// 设置字符编码
 
+        response.setHeader("Content-disposition", "attachment;filename="
+                + java.net.URLEncoder.encode("用户信息列表[文件名]", "UTF-8"));// 设置响应头
 
+        EasyExcel.write(response.getOutputStream(), User.class).sheet("Sheet1").doWrite(list); //用io流来写入数据
     }
 }
