@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class PageController {
 
     @Autowired
@@ -26,9 +27,11 @@ public class PageController {
 
     /**
      * 分页功能测试
+     * http://localhost:8080/users/list?page=1&limit=10
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
+
     public Result list(@RequestParam Map<String, Object> params) {
         Result result = new Result();
         if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
@@ -51,17 +54,31 @@ public class PageController {
     }
 
 
-    @GetMapping("/pageDown")
-    public void pageDown(HttpServletResponse response) {
-
-    }
-
-
-    @GetMapping("/simpleDown")
+    @GetMapping("/d")
     public void simpleDown(HttpServletResponse response) throws IOException {
         List<User> list = userService.getUserAll();
         DownExcel.download(response, User.class, list);
     }
+
+    /**
+     * 分页下载
+     * ttp://localhost:8080/users/list?page=1&limit=10
+     *
+     * @param response
+     */
+    @GetMapping("/pd")
+    public void pageDown(HttpServletResponse response) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("page", "1");
+        params.put("limit", "10");
+
+        // 封装查询参数
+        PageQueryUtil queryParamList = new PageQueryUtil(params);
+        // 查询并封装分页结果集
+        PageResult userPage = userService.getUserPage(queryParamList);
+
+    }
+
 
     @GetMapping("/simpleDown2")
     public void simpleDown2(HttpServletResponse response) throws IOException {

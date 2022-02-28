@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: 'users/list',
+        url: 'user/list',
         datatype: "json",
         colModel: [
             {label: 'id', name: 'id', index: 'id', width: 50, hidden: true, key: true},
@@ -8,8 +8,8 @@ $(function () {
             {label: '密码字段', name: 'password', index: 'password', sortable: false, width: 80}
         ],
         height: 485,
-        rowNum: 10,
-        rowList: [10, 30, 50],
+        rowNum: 30,
+        rowList: [30, 50, 80],
         styleUI: 'Bootstrap',
         loadtext: '信息读取中...',
         rownumbers: true,
