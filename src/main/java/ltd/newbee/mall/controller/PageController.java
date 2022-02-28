@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ public class PageController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-
     public Result list(@RequestParam Map<String, Object> params) {
         Result result = new Result();
         if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
@@ -68,7 +69,7 @@ public class PageController {
      * @param response
      */
     @GetMapping("/pd")
-    public void pageDown(HttpServletResponse response) {
+    public void pageDown(HttpServletResponse response) throws UnsupportedEncodingException {
         Map<String, Object> params = new HashMap<>();
         params.put("page", "1");
         params.put("limit", "10");
@@ -92,6 +93,11 @@ public class PageController {
                 excelWriter.write(data, writeSheet);
             }
         } finally {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            // 这里URLEncoder.encode可以防止中文乱码
+            fileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
             // 千万别忘记finish 会帮忙关闭流
             if (excelWriter != null) {
                 excelWriter.finish();
